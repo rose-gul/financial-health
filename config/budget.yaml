@@ -1,0 +1,42 @@
+# Monthly budget configuration for the forecast + alerts agents.
+# Amounts are monthly limits in the account currency (USD in the sample data).
+
+monthly_income: 5200.00
+
+# Per-category monthly spending limits. The forecast agent projects month-end
+# spend from partial-month data and compares against these.
+budgets:
+  groceries: 600.00
+  dining: 300.00
+  transport: 250.00
+  housing: 1600.00
+  utilities: 300.00
+  subscriptions: 120.00
+  shopping: 350.00
+  healthcare: 200.00
+  uncategorized: 150.00
+
+# Fixed / recurring categories are NOT linearly projected to month-end by the
+# forecast agent (rent is paid once, not "on pace" to double). Their actual
+# spend so far is used as the projection directly. Everything else is projected
+# linearly from the fraction of the month elapsed.
+fixed_categories:
+  - housing
+  - utilities
+  - subscriptions
+
+# Savings goal the advice agent optimizes toward.
+savings:
+  monthly_goal: 1000.00        # target amount to save each month
+  emergency_fund_target: 15000.00
+  current_savings: 8200.00
+
+# Alert thresholds.
+alerts:
+  # Fire a budget alert when projected month-end spend for a category exceeds
+  # this fraction of its budget (1.0 = at budget, 1.1 = 10% over).
+  budget_overage_ratio: 1.00
+  # Also warn when *actual* spend so far already exceeds this fraction of budget.
+  budget_warning_ratio: 0.85
+  # Fire a market alert when an asset's daily change magnitude exceeds this pct.
+  market_move_pct: 4.0

@@ -1,0 +1,87 @@
+# Keyword -> category rules for the categorize agent.
+# Matching is case-insensitive substring match against the transaction description.
+# The first category whose keyword list matches wins; order matters.
+# Anything unmatched falls through to "uncategorized".
+
+categories:
+  groceries:
+    - grocery
+    - supermarket
+    - whole foods
+    - trader joe
+    - safeway
+    - aldi
+    - costco
+  dining:
+    - restaurant
+    - cafe
+    - coffee
+    - starbucks
+    - mcdonald
+    - chipotle
+    - doordash
+    - uber eats
+    - grubhub
+  transport:
+    - uber
+    - lyft
+    - shell
+    - chevron
+    - gas
+    - fuel
+    - parking
+    - transit
+    - metro
+  housing:
+    - rent
+    - mortgage
+    - landlord
+    - hoa
+  utilities:
+    - electric
+    - water bill
+    - gas bill
+    - internet
+    - comcast
+    - verizon
+    - at&t
+    - phone bill
+  subscriptions:
+    - netflix
+    - spotify
+    - hulu
+    - disney+
+    - youtube premium
+    - prime
+    - icloud
+    - dropbox
+    - adobe
+    - gym
+  shopping:
+    - amazon
+    - target
+    - walmart
+    - best buy
+    - ebay
+    - etsy
+  healthcare:
+    - pharmacy
+    - cvs
+    - walgreens
+    - doctor
+    - dental
+    - clinic
+    - insurance
+  income:
+    - payroll
+    - salary
+    - direct deposit
+    - refund
+    - interest earned
+
+# Categories that represent money coming IN rather than expenses.
+income_categories:
+  - income
+
+# Fallback when nothing matches.
+default_category: uncategorized

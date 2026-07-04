@@ -1,0 +1,20 @@
+{
+  "as_of": "2026-06-15",
+  "risk_free_rate_pct": 4.3,
+  "assets": [
+    { "symbol": "VTI",  "name": "Vanguard Total Stock Market ETF", "asset_class": "equity", "price": 268.40, "daily_change_pct": 1.2,  "ytd_return_pct": 8.4 },
+    { "symbol": "VXUS", "name": "Vanguard Total International ETF",  "asset_class": "equity", "price": 64.85,  "daily_change_pct": 0.6,  "ytd_return_pct": 5.1 },
+    { "symbol": "BND",  "name": "Vanguard Total Bond Market ETF",   "asset_class": "bond",   "price": 72.10,  "daily_change_pct": -0.3, "ytd_return_pct": 2.2 },
+    { "symbol": "NVDA", "name": "NVIDIA Corporation",               "asset_class": "equity", "price": 141.20, "daily_change_pct": 6.8,  "ytd_return_pct": 41.3 },
+    { "symbol": "BTC",  "name": "Bitcoin",                          "asset_class": "crypto", "price": 61240.0, "daily_change_pct": -5.4, "ytd_return_pct": 18.7 },
+    { "symbol": "VMFXX","name": "Vanguard Federal Money Market",    "asset_class": "cash",   "price": 1.00,   "daily_change_pct": 0.0,  "ytd_return_pct": 4.3 }
+  ],
+  "holdings": [
+    { "symbol": "VTI",   "account": "brokerage",     "shares": 42.0 },
+    { "symbol": "VXUS",  "account": "brokerage",     "shares": 30.0 },
+    { "symbol": "BND",   "account": "brokerage",     "shares": 55.0 },
+    { "symbol": "NVDA",  "account": "brokerage",     "shares": 8.0 },
+    { "symbol": "BTC",   "account": "crypto_wallet", "shares": 0.05 },
+    { "symbol": "VMFXX", "account": "savings",       "shares": 8200.0 }
+  ]
+}

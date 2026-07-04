@@ -1,0 +1,17 @@
+# Virtual environment
+.venv/
+venv/
+
+# Secrets
+.env
+
+# Generated reports
+outputs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Logs / scratch
+*.log
