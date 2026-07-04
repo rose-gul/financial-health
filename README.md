@@ -1,5 +1,7 @@
 # Finance Agent — Multi-Agent Personal-Finance Pipeline (v1)
 
+[![pipeline](https://github.com/rose-gul/financial-health/actions/workflows/pipeline.yml/badge.svg)](https://github.com/rose-gul/financial-health/actions/workflows/pipeline.yml)
+
 A local, privacy-first personal-finance engine built as a **multi-agent pipeline**. Each step runs
 as its **own isolated subprocess**, and **every message between agents is validated with the
 [Guardrails](https://www.guardrailsai.com/) library**. It categorizes your spending, forecasts your
