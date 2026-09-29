@@ -7,6 +7,7 @@ from datetime import date
 
 from ..contracts import RunMeta
 from ..guards import BoundaryValidationError
+from ..periods import period_bounds
 from ._base import log, run
 
 
@@ -44,7 +45,14 @@ def handler(_payload: dict, meta: RunMeta) -> dict:
     if not transactions:
         raise BoundaryValidationError("no transactions found in CSV")
 
-    as_of = max(t["date"] for t in transactions)
+    as_of = meta.as_of or date.fromisoformat(max(t["date"] for t in transactions))
+    start, _ = period_bounds(as_of, meta.period)
+    transactions = [
+        t for t in transactions if start.isoformat() <= t["date"] <= as_of.isoformat()
+    ]
+    if not transactions:
+        raise BoundaryValidationError(f"no transactions in selected period {start} through {as_of}")
+    as_of = as_of.isoformat()
     log(f"ingested {len(transactions)} transactions through {as_of}")
     return {"as_of": as_of, "transactions": transactions}
 

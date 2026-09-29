@@ -14,7 +14,8 @@ The agent writes ONLY the next payload dict to stdout.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Type
+from datetime import date
+from typing import Dict, List, Literal, Type
 
 from pydantic import BaseModel, ConfigDict
 
@@ -34,6 +35,8 @@ class RunMeta(BaseModel):
     market_path: str
     output_dir: str
     llm_enabled: bool = False
+    period: Literal["monthly", "yearly"] = "monthly"
+    as_of: date | None = None
 
 
 class Envelope(BaseModel):

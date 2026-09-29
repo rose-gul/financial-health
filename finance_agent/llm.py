@@ -82,7 +82,7 @@ def advice_recommendations(context: dict) -> Optional[List[str]]:
         guard = Guard.for_pydantic(_Advice)
         prompt = (
             "You are a cautious personal-finance assistant. Given this JSON summary "
-            "of the user's month, return 3-5 short, concrete, non-speculative "
+            "of the user's selected reporting period, return 3-5 short, concrete, non-speculative "
             "recommendations. Do not give specific securities advice.\n\n"
             f"{context}"
         )

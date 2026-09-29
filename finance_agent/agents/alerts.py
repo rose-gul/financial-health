@@ -34,7 +34,7 @@ def handler(payload: dict, meta: RunMeta) -> dict:
                     "kind": "budget_overage",
                     "title": f"{c['category'].title()} projected over budget",
                     "message": (
-                        f"Projected ${c['projected_spend']:.0f} vs ${budget:.0f} budget "
+                        f"Projected ${c['projected_spend']:.0f} vs ${budget:.0f} {forecast['period']} budget "
                         f"({projected_ratio * 100:.0f}% of budget)."
                     ),
                     "category": c["category"],
@@ -88,7 +88,7 @@ def handler(payload: dict, meta: RunMeta) -> dict:
                 "title": "Savings goal at risk",
                 "message": (
                     f"Projected savings ${advice['projected_savings']:.0f} is "
-                    f"${gap:.0f} below your ${advice['savings_goal']:.0f} goal."
+                    f"${gap:.0f} below your ${advice['savings_goal']:.0f} {forecast['period']} goal."
                 ),
                 "value": round(gap, 2),
             }

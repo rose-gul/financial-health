@@ -37,6 +37,12 @@ jobs:
           python -m pip install -U pip
           pip install -r requirements.txt
 
+      - name: Test monthly and yearly reporting
+        run: python -m unittest discover -s tests -v
+
+      - name: Run yearly pipeline
+        run: python main.py --input data/transactions.csv --period yearly --output-dir outputs/yearly
+
       - name: Run pipeline
         run: python main.py --input data/transactions.csv
 

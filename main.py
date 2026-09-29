@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from datetime import date
 
 # Ensure the package is importable when run as `python main.py` from anywhere.
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -46,6 +47,10 @@ def _parse_args(argv=None) -> argparse.Namespace:
     p.add_argument("--timeout", type=float, default=30.0, help="per-step timeout in seconds")
     p.add_argument("--llm", action="store_true", help="enable optional Claude assist")
     p.add_argument("--quiet", action="store_true", help="suppress per-step progress")
+    p.add_argument("--period", choices=("monthly", "yearly"), default="monthly",
+                   help="report period (default: monthly)")
+    p.add_argument("--as-of", type=date.fromisoformat, metavar="YYYY-MM-DD",
+                   help="report cutoff; selects its month/year (default: latest CSV date)")
     return p.parse_args(argv)
 
 
@@ -60,8 +65,8 @@ def _print_summary(final: dict) -> None:
     print(report["headline"])
     print(line)
 
-    print("\nBUDGET FORECAST  (day "
-          f"{forecast['days_elapsed']}/{forecast['days_in_month']} of {forecast['month']})")
+    print(f"\n{forecast['period'].upper()} BUDGET FORECAST  (day "
+          f"{forecast['days_elapsed']}/{forecast['days_in_period']} of {forecast['period_label']})")
     print(f"  {'category':<14}{'actual':>10}{'projected':>12}{'budget':>10}   status")
     for c in forecast["categories"]:
         status = "OVER" if c["projected_over_budget"] else ("fixed" if c["is_fixed"] else "ok")
@@ -70,7 +75,7 @@ def _print_summary(final: dict) -> None:
     print(f"  {'-' * 60}")
     print(f"  {'TOTAL':<14}{forecast['total_actual_spend']:>10.2f}"
           f"{forecast['total_projected_spend']:>12.2f}")
-    print(f"  Projected month-end savings: ${forecast['projected_month_end_savings']:.2f}"
+    print(f"  Projected period-end savings: ${forecast['projected_period_end_savings']:.2f}"
           f"  (goal ${advice['savings_goal']:.0f}, "
           f"{'ON TRACK' if advice['on_track_for_goal'] else 'SHORT'})")
 
@@ -101,6 +106,8 @@ def main(argv=None) -> int:
         market_path=_abs(args.market),
         output_dir=_abs(args.output_dir),
         llm_enabled=args.llm,
+        period=args.period,
+        as_of=args.as_of,
     )
 
     def log(message: str) -> None:

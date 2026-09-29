@@ -33,8 +33,11 @@ def handler(payload: dict, meta: RunMeta) -> dict:
     savings_cfg = budget_cfg.get("savings", {}) or {}
 
     forecast = payload["forecast"]
-    savings_goal = round(float(savings_cfg.get("monthly_goal", 0.0)), 2)
-    projected_savings = float(forecast["projected_month_end_savings"])
+    yearly = forecast["period"] == "yearly"
+    months = 12 if yearly else 1
+    period_noun = "year" if yearly else "month"
+    savings_goal = round(float(savings_cfg.get("monthly_goal", 0.0)) * months, 2)
+    projected_savings = float(forecast["projected_period_end_savings"])
     on_track = projected_savings >= savings_goal
 
     ef_target = round(float(savings_cfg.get("emergency_fund_target", 0.0)), 2)
@@ -66,13 +69,13 @@ def handler(payload: dict, meta: RunMeta) -> dict:
     for c in sorted(over, key=lambda x: x["projected_spend"] - x["budget"], reverse=True)[:3]:
         recs.append(
             f"Trim {c['category']}: projected ${c['projected_spend']:.0f} vs "
-            f"${c['budget']:.0f} budget this month."
+            f"${c['budget']:.0f} budget this {period_noun}."
         )
     if not on_track:
         gap = savings_goal - projected_savings
         recs.append(
             f"Projected savings ${projected_savings:.0f} is ${gap:.0f} short of your "
-            f"${savings_goal:.0f} monthly goal — close it by curbing the categories above."
+            f"${savings_goal:.0f} {forecast['period']} goal — close it by curbing the categories above."
         )
     else:
         recs.append(
@@ -94,6 +97,8 @@ def handler(payload: dict, meta: RunMeta) -> dict:
     # Optional LLM: replace the recommendation text with a nicer set (schema-guarded).
     if llm.llm_enabled(meta):
         context = {
+            "period": forecast["period"],
+            "period_label": forecast["period_label"],
             "projected_savings": projected_savings,
             "savings_goal": savings_goal,
             "on_track": on_track,
@@ -112,7 +117,8 @@ def handler(payload: dict, meta: RunMeta) -> dict:
         "savings_goal": savings_goal,
         "projected_savings": round(projected_savings, 2),
         "on_track_for_goal": on_track,
-        "suggested_monthly_investment": suggested,
+        "suggested_monthly_investment": round(suggested / months, 2),
+        "suggested_period_investment": suggested,
         "emergency_fund_target": ef_target,
         "emergency_fund_progress_pct": ef_progress,
         "allocation": allocation,

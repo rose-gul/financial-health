@@ -5,7 +5,7 @@
 A local, privacy-first personal-finance engine built as a **multi-agent pipeline**. Each step runs
 as its **own isolated subprocess**, and **every message between agents is validated with the
 [Guardrails](https://www.guardrailsai.com/) library**. It categorizes your spending, forecasts your
-monthly budget, gives rule-based investment/savings advice, raises alerts on budget overages and
+monthly or yearly budget, gives rule-based investment/savings advice, raises alerts on budget overages and
 market swings, and exports a report — all **offline, with no bank accounts or secrets required**.
 
 ```
@@ -41,13 +41,47 @@ This runs the full pipeline and writes:
 
 It also prints a human-readable summary with your forecast and any alerts.
 
+## Monthly and yearly reports
+
+Monthly is the default. Choose the reporting period and optionally a cutoff date:
+
+```powershell
+python main.py --period monthly --as-of 2026-06-30 --output-dir outputs/monthly
+python main.py --period yearly --as-of 2026-12-31 --output-dir outputs/yearly
+```
+
+`--as-of` selects the calendar month or year containing that date and includes only
+transactions from its start through that date. Without it, the latest date in the
+CSV is used. A period with no transactions fails with a clear error. Use the last
+day of a completed month/year to report actual totals without extrapolation.
+Separate output directories keep monthly and yearly reports from overwriting each other.
+
+Keep configuration amounts monthly: yearly mode multiplies category budgets,
+expected income, and the savings goal by 12. Emergency-fund balances and portfolio
+values are unchanged. Variable spending is projected by elapsed calendar days,
+including leap years. Monthly fixed spending uses actual charges; yearly fixed
+spending uses average spending per elapsed calendar month multiplied by 12
+(the current month counts as one, without daily extrapolation).
+
+For meaningful forecasts, supply complete transactions from the start of the
+selected month/year through the cutoff. Missing months count as zero spending;
+the app cannot distinguish missing records from no spending. The sample CSV
+contains only June data, so use your full year-to-date CSV for a yearly forecast.
+
+JSON and CSV exports identify the period, its boundaries, and the cutoff date.
+JSON's `period_income` and `projected_period_end_savings` apply to both modes.
+Legacy `month`, `days_in_month`, and `projected_month_end_savings` fields are
+preserved for monthly runs and are null for yearly runs. `monthly_income` and
+`suggested_monthly_investment` retain monthly units; `suggested_period_investment`
+uses the chosen period.
+
 ## The agents
 
 | Step | Agent | What it does |
 |------|-------|--------------|
 | 1 | `ingest` | Reads & normalizes the transactions CSV into validated records |
 | 2 | `categorize` | Keyword-rule categorization (optional Claude assist) |
-| 3 | `forecast` | Projects month-end spend per category vs. your budget |
+| 3 | `forecast` | Projects month- or year-end spend per category vs. your budget |
 | 4 | `advice` | Savings-goal & allocation advice from mock market data (optional Claude assist) |
 | 5 | `alerts` | Budget-overage and market-fluctuation alerts |
 | 6 | `report` | Aggregates everything; writes `report.json` + `report.csv` |

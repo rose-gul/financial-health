@@ -1,5 +1,6 @@
 # Monthly budget configuration for the forecast + alerts agents.
 # Amounts are monthly limits in the account currency (USD in the sample data).
+# Yearly reports multiply income, budgets, and monthly savings goals by 12.
 
 monthly_income: 5200.00
 
@@ -20,6 +21,8 @@ budgets:
 # forecast agent (rent is paid once, not "on pace" to double). Their actual
 # spend so far is used as the projection directly. Everything else is projected
 # linearly from the fraction of the month elapsed.
+# In yearly mode fixed spending is annualized by elapsed calendar months;
+# variable spending is annualized by elapsed calendar days.
 fixed_categories:
   - housing
   - utilities

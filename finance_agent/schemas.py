@@ -55,14 +55,21 @@ class CategorySpend(BaseModel):
 class BudgetForecast(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    month: str = Field(min_length=7)              # e.g. "2026-06"
-    days_elapsed: int = Field(ge=1, le=31)
-    days_in_month: int = Field(ge=28, le=31)
+    period: Literal["monthly", "yearly"]
+    period_label: str
+    period_start: date
+    period_end: date
+    days_in_period: int = Field(ge=28, le=366)
+    period_income: float = Field(ge=0)
+    projected_period_end_savings: float
+    month: Optional[str] = None                 # legacy monthly-only fields
+    days_elapsed: int = Field(ge=1, le=366)
+    days_in_month: Optional[int] = Field(default=None, ge=28, le=31)
     monthly_income: float = Field(ge=0)
     income_so_far: float = Field(ge=0)
     total_actual_spend: float = Field(ge=0)
     total_projected_spend: float = Field(ge=0)
-    projected_month_end_savings: float            # income - projected spend; may be negative
+    projected_month_end_savings: Optional[float] = None
     categories: List[CategorySpend]
 
 
@@ -83,6 +90,7 @@ class InvestmentAdvice(BaseModel):
     projected_savings: float                      # from the forecast; may be negative
     on_track_for_goal: bool
     suggested_monthly_investment: float = Field(ge=0)
+    suggested_period_investment: float = Field(ge=0)
     emergency_fund_target: float = Field(ge=0)
     emergency_fund_progress_pct: float = Field(ge=0)
     allocation: List[AllocationSuggestion] = Field(default_factory=list)
@@ -111,13 +119,18 @@ class Report(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     as_of: date
-    month: str
+    period: Literal["monthly", "yearly"]
+    period_label: str
+    period_start: date
+    period_end: date
+    month: Optional[str] = None
     headline: str = Field(min_length=1)
     num_transactions: int = Field(ge=0)
     num_alerts: int = Field(ge=0)
     total_actual_spend: float = Field(ge=0)
     total_projected_spend: float = Field(ge=0)
-    projected_month_end_savings: float
+    projected_period_end_savings: float
+    projected_month_end_savings: Optional[float] = None
     on_track_for_goal: bool
     top_overages: List[str] = Field(default_factory=list)
 
